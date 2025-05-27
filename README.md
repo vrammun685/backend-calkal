@@ -86,3 +86,9 @@ response.set_cookie(
     max_age=7 * 24 * 60 * 60,
     samesite=samesite_policy,
 )
+
+externa
+DATABASE_URL=postgresql://calkal_user:krz87EQu29ZtYpkHlYkED0D90Qylk9oD@dpg-d0q55iodl3ps73bb41rg-a.frankfurt-postgres.render.com:5432/calkaldb
+
+interna
+DATABASE_URL=postgresql://calkal_user:krz87EQu29ZtYpkHlYkED0D90Qylk9oD@dpg-d0q55iodl3ps73bb41rg-a5432/calkaldb
