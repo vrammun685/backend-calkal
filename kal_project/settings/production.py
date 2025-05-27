@@ -6,7 +6,7 @@ import dj_database_url
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
 # Cargar credenciales desde .env
 print("DATABASE_URL desde .env:", os.getenv("DATABASE_URL"))
