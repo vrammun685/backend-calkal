@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+
+from kal_project import settings
 from .models import Usuario, Diario, PesoRegistrado, AlimentoConsumido, Comida, Alimento
 from .serializers import *
 from .utils import correo_bienvenida, correo_cambiar_Contraseña, cambiar_Contraseña, crearDiario, crearPeso, actualizarTrasActualizar, actualizarTraEditarPeso, ActualizardiarioPorComida
@@ -82,22 +84,25 @@ class Login(APIView):
                 "message":"Login successful",
                 "is_admin": user.is_staff,
             })
+            secure_cookie = not settings.DEBUG
+            samesite_policy = 'None' if not settings.DEBUG else 'Lax'
+
             response.set_cookie(
                 key='token',
                 value=access_token,
                 httponly=True,
-                secure=False, #Cambiar en Produccion
+                secure=secure_cookie,
                 max_age=3600,
-                samesite='Lax',
+                samesite=samesite_policy,
             )
 
             response.set_cookie(
                 key='refresh_token',
                 value=refresh_token,
                 httponly=True,
-                secure=False,
-                max_age=7 * 24 * 60 * 60,  # 7 días
-                samesite='Lax'
+                secure=secure_cookie,
+                max_age=7 * 24 * 60 * 60,
+                samesite=samesite_policy,
             )
             return response
         
@@ -134,13 +139,16 @@ class Refresh_Token(APIView):
                 "access_token": new_access_token
             })
             # Almacenamos el nuevo access token en la cookie
+            secure_cookie = not settings.DEBUG
+            samesite_policy = 'None' if not settings.DEBUG else 'Lax'
+
             response.set_cookie(
                 key='token',
                 value=new_access_token,
                 httponly=True,
-                secure=False,  # Cambiar a True en producción
-                max_age=300,  # Expiración en 5 minutos
-                samesite='Lax'
+                secure=secure_cookie,
+                max_age=3600,
+                samesite=samesite_policy,
             )
             return response
 

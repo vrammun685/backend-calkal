@@ -55,4 +55,34 @@ https://bentogrids.com/shots/cltgwuq2s0002p3kvfireey42 para pesos
 
 0 2 * * * cd /ruta/a/carpetax && /ruta/a/carpetax/venv/bin/python manage.py crear_diarios --settings=mi_proyecto.settings.base >> logs/crear_diarios.log 2>&1 comando para cron en produccion necesito un sitio que tenga terminal para ejecutar esto
 
-Cambiar link para produccion del correo del cambiar contrasena
+Cosas que debo de cambiar para produccuion en el backend
+link para produccion del correo del cambiar contrasena
+La url de la base de datos, debo usar la interna vale
+samesite='None',  # MUY IMPORTANTE si los dominios son distintos
+secure=True       # Obligatorio si samesite es None
+
+Pasar el # SECURITY WARNING: keep the secret key used in production secret! al env de render
+SECRET_KEY = 'django-insecure-x4@bh_p_!*qr5x2(!*9%9!zmkl1p)ujaqei2^rn=!-2y9&_47='
+
+poner esto login
+secure_cookie = not settings.DEBUG
+samesite_policy = 'None' if not settings.DEBUG else 'Lax'
+
+Para login y refresh_token
+response.set_cookie(
+    key='token',
+    value=access_token,
+    httponly=True,
+    secure=secure_cookie,
+    max_age=3600,
+    samesite=samesite_policy,
+)
+
+response.set_cookie(
+    key='refresh_token',
+    value=refresh_token,
+    httponly=True,
+    secure=secure_cookie,
+    max_age=7 * 24 * 60 * 60,
+    samesite=samesite_policy,
+)
