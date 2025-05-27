@@ -1,7 +1,7 @@
 # settings/__init__.py
 # Carga el archivo .env desde la raíz del proyecto
 
-ENV = 'local'
+ENV = 'production'
 
 if ENV == 'production':
     print(ENV)
