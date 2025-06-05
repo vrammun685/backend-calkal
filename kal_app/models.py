@@ -203,7 +203,7 @@ class ComidaConsumida(models.Model):
 
     parte_del_dia=models.CharField(max_length=30, choices=PARTE_DIA, default='Selecciona una opcion')
     diario = models.ForeignKey(Diario, on_delete=models.CASCADE, related_name='comidas',)
-    comida= models.ForeignKey(Comida, on_delete=models.PROTECT)
+    comida= models.ForeignKey(Comida, on_delete=models.CASCADE)
     porcion_a_comer= models.FloatField()
 
     def calorias_totales(self):

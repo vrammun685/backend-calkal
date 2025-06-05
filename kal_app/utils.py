@@ -189,10 +189,20 @@ def actualizarTrasActualizar(usuario):
     else:
         print('No existe diario para este usuario, no se pudo actualizar')
 
-def ActualizardiarioPorComida(diario):
+def ActualizardiarioPorAlimento(diario):
     alimentos = AlimentoConsumido.objects.filter(diario=diario)
     diario.calorias_Consumidas = sum(a.calorias_totales() for a in alimentos)
     diario.proteinas_Consumidas = sum(a.proteinas_totales() for a in alimentos)
     diario.grasas_Consumidas = sum(a.grasas_totales() for a in alimentos)
     diario.carbohidratos_Consumidas = sum(a.carbohidratos_totales() for a in alimentos)
+    diario.save()
+
+def ActualizardiarioPorComida(diario):
+    comidas_consumidas = ComidaConsumida.objects.filter(diario=diario)
+    
+    diario.calorias_Consumidas = sum(c.calorias_totales() for c in comidas_consumidas)
+    diario.proteinas_Consumidas = sum(c.proteinas_totales() for c in comidas_consumidas)
+    diario.grasas_Consumidas = sum(c.grasas_totales() for c in comidas_consumidas)
+    diario.carbohidratos_Consumidas = sum(c.carbohidratos_totales() for c in comidas_consumidas)
+    
     diario.save()

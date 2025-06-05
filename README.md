@@ -92,3 +92,9 @@ DATABASE_URL=postgresql://calkal_user:krz87EQu29ZtYpkHlYkED0D90Qylk9oD@dpg-d0q55
 
 interna
 DATABASE_URL=postgresql://calkal_user:krz87EQu29ZtYpkHlYkED0D90Qylk9oD@dpg-d0q55iodl3ps73bb41rg-a5432/calkaldb
+
+actualizar al anadir alimentos.
+crear recetas
+eliminar alimentos
+
+Poner mensaje contrasenia

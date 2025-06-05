@@ -8,7 +8,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'id', 'username', 'first_name', 'last_name', 'email',
             'altura', 'edad', 'peso', 'genero', 'objetivo', 'actividad',
             'imagen_Perfil', 'notificaciones', 'password',
-            'is_staff', 'is_superuser'
         ]
         extra_kwargs = {
             'password': {'write_only': True},
@@ -33,10 +32,16 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class UsuarioEditarPerfilSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     email = serializers.ReadOnlyField()
-
+    imagen_Perfil = serializers.SerializerMethodField()
     class Meta:
         model = Usuario
-        fields = ['username', 'email','first_name', 'last_name', 'peso', 'altura', 'edad', 'genero', 'objetivo', 'actividad','notificaciones']
+        fields = ['username', 'email','first_name', 'last_name', 'peso', 'altura', 'edad', 'genero', 'objetivo', 'actividad','notificaciones', 'imagen_Perfil']
+
+    def get_imagen_Perfil(self, obj):
+        request = self.context.get('request')
+        if obj.imagen_Perfil and hasattr(obj.imagen_Perfil, 'url'):
+            return request.build_absolute_uri(obj.imagen_Perfil.url)
+        return None
 
 class LoginSerializer(serializers.Serializer):
     usuario = serializers.CharField()
@@ -65,15 +70,34 @@ class DiarioSerializer(serializers.ModelSerializer):
 class ComidaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comida
-        fields = ['id', 'usuario', 'diario', 'numeroPersonas']
+        fields = '__all__'
 
 class AlimentoComidaSerializer(serializers.ModelSerializer):
+    nombre_es = serializers.CharField(source='alimento.nombre_es')
+    nombre_en = serializers.CharField(source='alimento.nombre_en')
+    medida = serializers.CharField(source='alimento.medida')
+    calorias_totales = serializers.SerializerMethodField()
+    grasas_totales = serializers.SerializerMethodField()
+    proteinas_totales = serializers.SerializerMethodField()
+    carbohidratos_totales = serializers.SerializerMethodField()
+
     class Meta:
         model = AlimentoComida
-        fields = [
-            'id', 'comida', 'cantidad', 'nombre_es', 'nombre_en', 
-            'medida', 'grasas', 'proteinas', 'carbohidratos', 'codigoAlimentos'
-        ]
+        fields = ['nombre_es','nombre_en', 'cantidad', 'medida',
+                  'calorias_totales', 'grasas_totales',
+                  'proteinas_totales', 'carbohidratos_totales']
+
+    def get_calorias_totales(self, obj):
+        return obj.calorias_totales()
+
+    def get_grasas_totales(self, obj):
+        return obj.grasas_totales()
+
+    def get_proteinas_totales(self, obj):
+        return obj.proteinas_totales()
+
+    def get_carbohidratos_totales(self, obj):
+        return obj.carbohidratos_totales()
 
 class AlimentoConsumidoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -88,3 +112,129 @@ class AlimentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alimento
         fields = '__all__'
+
+from rest_framework import serializers
+from .models import Comida, AlimentoComida, Alimento
+
+class IngredienteInputSerializer(serializers.Serializer):
+    alimento_id = serializers.IntegerField()
+    cantidad = serializers.FloatField()
+
+class ComidaCreateSerializer(serializers.ModelSerializer):
+    ingredientes = IngredienteInputSerializer(many=True)
+
+    class Meta:
+        model = Comida
+        fields = ['nombre', 'numeroPorciones', 'ingredientes']
+    
+
+    def create(self, validated_data):
+        ingredientes_data = validated_data.pop('ingredientes')
+        usuario = self.context['request'].user
+
+        comida = Comida.objects.create(
+            usuario=usuario,
+            nombre=validated_data['nombre'],
+            numeroPorciones=validated_data['numeroPorciones'],
+            calorias=0, proteinas=0, grasas=0, carbohidratos=0
+        )
+
+        total_cal = total_prot = total_grasas = total_carb = 0
+
+        for item in ingredientes_data:
+            alimento = Alimento.objects.get(pk=item['alimento_id'])
+            cantidad = item['cantidad']
+
+            ingrediente = AlimentoComida.objects.create(
+                comida=comida,
+                alimento=alimento,
+                cantidad=cantidad
+            )
+
+            total_cal += ingrediente.calorias_totales()
+            total_prot += ingrediente.proteinas_totales()
+            total_grasas += ingrediente.grasas_totales()
+            total_carb += ingrediente.carbohidratos_totales()
+
+        comida.calorias = total_cal
+        comida.proteinas = total_prot
+        comida.grasas = total_grasas
+        comida.carbohidratos = total_carb
+        comida.save()
+
+        return comida
+
+class IngredienteOutputSerializer(serializers.ModelSerializer):
+    alimento_id = serializers.IntegerField(source='alimento.id', read_only=True)
+    alimento = AlimentoSerializer(read_only=True)  # Tu serializer del alimento, asegúrate de que incluye el id
+
+    class Meta:
+        model = AlimentoComida
+        fields = ['alimento_id', 'cantidad', 'alimento']
+
+class ComidaEditarSerializer(serializers.ModelSerializer):
+    ingredientes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comida
+        fields = ['nombre', 'numeroPorciones', 'ingredientes']
+
+    def get_ingredientes(self, obj):
+        ingredientes = obj.alimentos.all()  # o como se llame tu related_name
+        return IngredienteOutputSerializer(ingredientes, many=True).data
+
+class AlimentoConsumidoDetalleSerializer(serializers.ModelSerializer):
+    nombre_es = serializers.CharField(source='alimento.nombre_es')
+    nombre_en = serializers.CharField(source='alimento.nombre_en')
+    medida = serializers.CharField(source='alimento.medida')
+    calorias = serializers.SerializerMethodField()
+    grasas = serializers.SerializerMethodField()
+    proteinas = serializers.SerializerMethodField()
+    carbohidratos = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AlimentoConsumido
+        fields = [
+            'id', 'nombre_es', 'nombre_en', 'cantidad', 'medida',
+            'calorias', 'grasas', 'proteinas', 'carbohidratos',
+        ]
+
+    def get_calorias(self, obj):
+        return obj.calorias_totales()
+
+    def get_grasas(self, obj):
+        return obj.grasas_totales()
+
+    def get_proteinas(self, obj):
+        return obj.proteinas_totales()
+
+    def get_carbohidratos(self, obj):
+        return obj.carbohidratos_totales()
+
+class ComidaConsumidaDetalleSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='comida.nombre')
+    porcion = serializers.FloatField(source='porcion_a_comer')  # ← Esto va FUERA de Meta
+    calorias = serializers.SerializerMethodField()
+    grasas = serializers.SerializerMethodField()
+    proteinas = serializers.SerializerMethodField()
+    carbohidratos = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ComidaConsumida
+        fields = [
+            'id', 'nombre', 'porcion', 'calorias',
+            'grasas', 'proteinas', 'carbohidratos',
+        ]
+
+    def get_calorias(self, obj):
+        return obj.calorias_totales()
+
+    def get_grasas(self, obj):
+        return obj.grasas_totales()
+
+    def get_proteinas(self, obj):
+        return obj.proteinas_totales()
+
+    def get_carbohidratos(self, obj):
+        return obj.carbohidratos_totales()
+
