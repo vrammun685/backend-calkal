@@ -85,6 +85,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'kal_project.wsgi.application'
 
 
