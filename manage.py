@@ -6,7 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kal_project.settings.production')
+    env = os.getenv('DJANGO_ENV', 'local')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'kal_project.settings.{env}')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

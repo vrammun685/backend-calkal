@@ -4,7 +4,7 @@ import os
 from decouple import config
 import dj_database_url
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
@@ -19,3 +19,7 @@ DATABASES = {
 }
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Permitir solicitudes desde tu frontend React
+]

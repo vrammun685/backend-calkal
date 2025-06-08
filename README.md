@@ -98,3 +98,24 @@ crear recetas
 eliminar alimentos
 
 Poner mensaje contrasenia
+
+Apuntes Sevillano
+
+    -Tienes que poner en el wsgi.py, manage.py, hacer que 
+
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kal_project.settings.production')
+
+    Sea un texto pillado desde .env, y además que el init.py la variable ENV, sea una en .env
+
+
+    -Además esta parte del base.py debes de mirarla en produccion, ya que sino los datos no se podrán enviar
+
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:3000',  # Permitir solicitudes desde tu frontend React
+    ]
+
+    Ese localhost ha de ser cambiado a tu URL de produccion del frontend
+
+    -Usa mas las varibles de entorno no tengas miedo al crearlas y usarlas.
+
+    -Tendrás el Error de que no te deja loguearte en dispositivos móviles y algun bug mas, muy probablemente tendrás que usar un archivo llamado _redirects, investiga sobre ello.

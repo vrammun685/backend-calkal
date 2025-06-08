@@ -65,9 +65,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'kal_project.urls'
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Permitir solicitudes desde tu frontend React
-]
+
 
 TEMPLATES = [
     {
