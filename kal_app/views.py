@@ -90,18 +90,18 @@ class Login(APIView):
                 key='token',
                 value=access_token,
                 httponly=True,
-                secure=secure_cookie,
+                secure=True,
                 max_age=3600,
-                samesite=samesite_policy,
+                samesite='None',
             )
 
             response.set_cookie(
                 key='refresh_token',
                 value=refresh_token,
                 httponly=True,
-                secure=secure_cookie,
+                secure=True,
                 max_age=7 * 24 * 60 * 60,
-                samesite=samesite_policy,
+                samesite='None',
             )
             return response
         
@@ -145,9 +145,9 @@ class Refresh_Token(APIView):
                 key='token',
                 value=new_access_token,
                 httponly=True,
-                secure=secure_cookie,
+                secure=True,
                 max_age=3600,
-                samesite=samesite_policy,
+                samesite='None',
             )
             return response
 
