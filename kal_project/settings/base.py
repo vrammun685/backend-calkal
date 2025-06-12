@@ -68,6 +68,9 @@ ROOT_URLCONF = 'kal_project.urls'
 
 CORS_ALLOW_CREDENTIALS = True
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 TEMPLATES = [
     {
