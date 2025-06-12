@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 import math
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
@@ -32,7 +33,7 @@ class Usuario(AbstractUser):
     altura = models.FloatField(null=True, blank=True)
     edad = models.IntegerField(validators=[MinValueValidator(12)], null=True, blank=True)
     peso = models.FloatField(null=True, blank=True)
-    imagen_Perfil = models.ImageField(null=True, blank=True)
+    imagen_Perfil = CloudinaryField('imagen_Perfil', null=True, blank=True)
     genero = models.CharField(max_length=100, choices=GENEROS, default='Selecciona biologicamente', null=True, blank=True)
     objetivo = models.CharField(max_length=200, choices=OBJETIVOS, default='Selecciona una opcion', null=True, blank=True)
     actividad = models.CharField(max_length=30, choices=ACTIVIDAD, default='Selecciona una opcion', null=True, blank=True)
@@ -120,7 +121,7 @@ class PesoRegistrado(models.Model):
 
     peso = models.FloatField()
     fecha = models.DateField(default=timezone.now)
-    foto_pesaje = models.ImageField(null=True, blank=True)
+    foto_pesaje = CloudinaryField('foto_pesaje', null=True, blank=True,)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pesos')
 
     def __str__(self):

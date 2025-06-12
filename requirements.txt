@@ -9,3 +9,5 @@ django-cors-headers
 djangorestframework-simplejwt
 whitenoise
 gunicorn
+cloudinary
+django-cloudinary-storage

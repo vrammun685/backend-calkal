@@ -18,8 +18,6 @@ DATABASES = {
     )
 }
 
-MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CORS_ALLOWED_ORIGINS = [
     'https://calkal.netlify.app',  # Permitir solicitudes desde tu frontend React

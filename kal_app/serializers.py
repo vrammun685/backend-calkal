@@ -11,8 +11,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'is_staff': {'read_only': False},
-            'is_superuser': {'read_only': False}
         }
 
     def validate_username(self, value):
@@ -26,7 +24,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        imagen = validated_data.pop('imagen_Perfil', None)
         user = Usuario.objects.create_user(**validated_data)
+        if imagen:
+            user.imagen_Perfil = imagen
+            user.save()
         return user
 
 class UsuarioEditarPerfilSerializer(serializers.ModelSerializer):
