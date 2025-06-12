@@ -8,6 +8,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
+ROOT_URLCONF = 'kal_project.urls'
+
 # Cargar credenciales desde .env
 print("DATABASE_URL desde .env:", os.getenv("DATABASE_URL"))
 DATABASES = {
