@@ -4,7 +4,6 @@
 ENV = 'produccion'
 
 if ENV == 'production':
-    print(ENV)
     from .production import *
 else:
     print(ENV)

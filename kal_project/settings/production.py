@@ -8,7 +8,7 @@ import os
 from decouple import config
 import dj_database_url
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
