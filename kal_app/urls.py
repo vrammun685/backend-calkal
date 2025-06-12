@@ -40,5 +40,4 @@ urlpatterns = [
     path('api/paneladmin/usuarios/', admin_panel_usuarios.as_view(), name='admin-panel'),
     path('api/paneladmin/alimentos/', admin_panel_alimentos.as_view(), name='admin-panel'),
     path('api/paneladmin/alimentos/<int:pk>/', admin_panel_alimentos.as_view(), name='admin-panel-eliminar alimento'),
-
 ]
