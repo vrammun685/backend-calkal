@@ -1,5 +1,9 @@
 from pathlib import Path
-from .base import *
+try:
+    from .base import *
+except Exception as e:
+    print("ERROR al importar base.py:", e)
+    raise
 import os
 from decouple import config
 import dj_database_url
