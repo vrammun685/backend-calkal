@@ -24,3 +24,8 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = [
     'https://calkal.netlify.app',  # Permitir solicitudes desde tu frontend React
 ]
+
+print("DEBUG:", DEBUG)
+print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
+print("ROOT_URLCONF:", ROOT_URLCONF)
+print("INSTALLED_APPS:", INSTALLED_APPS)
