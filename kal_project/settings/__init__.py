@@ -1,7 +1,8 @@
 # settings/__init__.py
 # Carga el archivo .env desde la raíz del proyecto
 
-ENV = 'produccion'
+from decouple import config
+ENV = config('DJANGO_ENV')
 
 if ENV == 'production':
     from .production import *

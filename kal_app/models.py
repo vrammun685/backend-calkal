@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 import math
 from django.utils import timezone
 from cloudinary.models import CloudinaryField
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 # Create your models here.
 
@@ -112,6 +113,17 @@ class Usuario(AbstractUser):
 
         carbohidratos = self.peso * gramos_por_kg
         return round(carbohidratos, 1)
+    
+    groups = models.ManyToManyField(
+        Group,
+        related_name='usuario_set',  # <-- evita el conflicto
+        blank=True
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='usuario_perms_set',  # <-- evita el conflicto
+        blank=True
+    )
 
 
 class PesoRegistrado(models.Model):
