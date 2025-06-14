@@ -84,8 +84,6 @@ class Login(APIView):
                 "message":"Login successful",
                 "is_admin": user.is_staff,
             })
-            secure_cookie = not settings.DEBUG
-            samesite_policy = 'None' if not settings.DEBUG else 'Lax'
 
             response.set_cookie(
                 key='token',
