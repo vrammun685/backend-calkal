@@ -14,7 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.exceptions import AuthenticationFailed
-from datetime import date
+from datetime import date, datetime, timedelta
 from collections import defaultdict
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -159,13 +159,28 @@ class Logout(APIView):
 
     def post(self, request):
         response = Response({"message": "Logged out"}, status=status.HTTP_200_OK)
-        
-        response.delete_cookie('token', path='/')
-        response.delete_cookie('refresh_token', path='/')
 
-        # Manualmente forzamos Set-Cookie con SameSite=None y Secure
-        response['Set-Cookie'] = 'token=; Path=/; Max-Age=0; SameSite=None; Secure'
-        response['Set-Cookie'] += '\nrefresh_token=; Path=/; Max-Age=0; SameSite=None; Secure'
+        expires = datetime.utcnow() - timedelta(days=1)
+
+        response.set_cookie(
+            key='token',
+            value='',
+            expires=expires,
+            max_age=0,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
+
+        response.set_cookie(
+            key='refresh_token',
+            value='',
+            expires=expires,
+            max_age=0,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
 
         return response
     
