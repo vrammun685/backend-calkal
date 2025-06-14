@@ -4,7 +4,7 @@ import dj_database_url
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['backend-calkal.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
 # Cargar credenciales desde .env
 print("DATABASE_URL desde .env:", os.getenv("DATABASE_URL"))
@@ -15,9 +15,8 @@ DATABASES = {
         ssl_require=True
     )
 }
-
+STATIC_URL = '/static/'
 
 CORS_ALLOWED_ORIGINS = [
     'https://calkal.netlify.app',  # Permitir solicitudes desde tu frontend React
-    'http://localhost:3000'
 ]

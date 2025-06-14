@@ -122,7 +122,7 @@ def correo_bienvenida(email, nombre):
 def correo_cambiar_Contraseña(usuario, uid, token):
     
 
-    link = f'http://localhost:3000/RecuperarContraseña/EscribirContraseña/{uid}/{token}'
+    link = f'https://calkal.netlify.app/RecuperarContraseña/EscribirContraseña/{uid}/{token}'
 
     asunto = 'Cambiar Contraseña'
     mensaje = f"""
