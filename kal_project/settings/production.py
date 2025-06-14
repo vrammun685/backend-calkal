@@ -2,7 +2,7 @@ from .base import *
 import os
 import dj_database_url
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['backend-calkal.onrender.com']
 
