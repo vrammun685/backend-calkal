@@ -158,9 +158,15 @@ class Logout(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        response = Response({"message":"Logged out"}, status=status.HTTP_200_OK)
-        response.delete_cookie('token', path='/', samesite='None', secure=True)
-        response.delete_cookie('refresh_token', path='/', samesite='None', secure=True)
+        response = Response({"message": "Logged out"}, status=status.HTTP_200_OK)
+        
+        response.delete_cookie('token', path='/')
+        response.delete_cookie('refresh_token', path='/')
+
+        # Manualmente forzamos Set-Cookie con SameSite=None y Secure
+        response['Set-Cookie'] = 'token=; Path=/; Max-Age=0; SameSite=None; Secure'
+        response['Set-Cookie'] += '\nrefresh_token=; Path=/; Max-Age=0; SameSite=None; Secure'
+
         return response
     
 
