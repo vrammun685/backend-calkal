@@ -157,6 +157,9 @@ class Refresh_Token(APIView):
             raise AuthenticationFailed('El refresh token no es válido o ha expirado.')
         
 class Logout(APIView):
+    permission_classes = [IsAuthenticated]  # ← IMPORTANTE
+    http_method_names = ['post', 'options']
+
     def post(self, request):
         response = Response({"message":"Logged out"}, status=status.HTTP_200_OK)
         response.delete_cookie('token')
