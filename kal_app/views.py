@@ -157,13 +157,21 @@ class Refresh_Token(APIView):
             raise AuthenticationFailed('El refresh token no es válido o ha expirado.')
         
 class Logout(APIView):
-    permission_classes = [IsAuthenticated]  # ← IMPORTANTE
+    permission_classes = [IsAuthenticated]
     http_method_names = ['post', 'options']
 
     def post(self, request):
         response = Response({"message":"Logged out"}, status=status.HTTP_200_OK)
         response.delete_cookie('token')
         response.delete_cookie('refresh_token')
+        return response
+    
+    def options(self, request, *args, **kwargs):  # ← AÑADIR ESTO SI SIGUE FALLANDO
+        response = Response(status=status.HTTP_200_OK)
+        response['Access-Control-Allow-Origin'] = 'https://calkal.netlify.app'
+        response['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Content-Type'
+        response['Access-Control-Allow-Credentials'] = 'true'
         return response
 
 class SolicitarCorreoPass(APIView):
