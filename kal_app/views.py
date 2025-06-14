@@ -460,8 +460,25 @@ class Perfil(APIView):
         response = Response({"detail": "Cuenta eliminada correctamente"}, status=204)
 
         # Borramos las cookies
-        response.delete_cookie('token')
-        response.delete_cookie('refresh_token')
+        expires = datetime.utcnow() - timedelta(days=1)
+
+        response.set_cookie(
+            key='token',
+            value='',
+            expires=expires,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
+
+        response.set_cookie(
+            key='refresh_token',
+            value='',
+            expires=expires,
+            path='/',
+            samesite='None',
+            secure=True,
+        )
 
         # Eliminamos el usuario
         user.delete()
